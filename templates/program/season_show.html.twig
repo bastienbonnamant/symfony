@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Saison #{{ seasons.id }}{% endblock %}
+
+{% block body %}
+
+<div class="media">
+  <img class="align-self-start mr-3" src="{{program.poster}}" alt="{{ program.title }} poster">
+  <div class="media-body">
+    <h1 class="mt-0">{{ program.title }}</h1>
+    <p>{{ program.summary }}</p>
+    <p>{{ seasons.number }} - {{ seasons.description }} - {{ seasons.year }}</p>
+
+{% endblock %}
