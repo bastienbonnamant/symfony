@@ -1,0 +1,15 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Episode{% endblock %}
+
+{% block body %}
+  <img class="align-self-start mr-3" src="{{ program.poster }}" alt="{{ program.title }} poster">
+<h3> Episode : {{ episode.title }}</h3>
+<h3> Synopsis : {{ episode.synopsis }} </h3>
+
+<a href="{{ path("program_show", { id: program.id }) }}">Voir la saison</a>
+
+<a href="{{ path('app_index') }}">
+        Retour à l'accueil
+    </a>
+{% endblock %}
