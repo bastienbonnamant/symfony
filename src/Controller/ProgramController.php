@@ -9,6 +9,10 @@ use Symfony\Component\Routing\Annotation\Route;
 use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
+use App\Form\ProgramType;
+
+use Symfony\Component\HttpFoundation\Request;
+
 
 
 
@@ -32,6 +36,36 @@ Class ProgramController extends AbstractController
          );
     }
 
+
+    /**
+     * The controller for the program add form
+     * Display the form or deal with it
+     *
+     * @Route("/newprogram", name="newprogram")
+     */
+    public function new(Request $request) : Response
+    {
+        // Create a new Program Object
+        $program = new Program();
+        // Create the associated Form
+        $form = $this->createForm(ProgramType::class, $program);
+        // Get data from HTTP request
+        $form->handleRequest($request);
+        // Was the form submitted ?
+        if ($form->isSubmitted()) {
+            // Deal with the submitted data
+            // Get the Entity Manager
+            $entityManager = $this->getDoctrine()->getManager();
+            // Persist Category Object
+            $entityManager->persist($program);
+            // Flush the persisted object
+            $entityManager->flush();
+            // Finally redirect to categories list
+            return $this->redirectToRoute('program_index');
+        }
+        // Render the form
+        return $this->render('category/newprogram.html.twig', ["form" => $form->createView()]);
+    }
     
     /** 
      * @param int $id
@@ -40,19 +74,6 @@ Class ProgramController extends AbstractController
     */
     public function show(Program $program) : Response
     {
-        /*$program = $this->getDoctrine()
-        ->getRepository(Program::class)
-        ->findOneBy(['id' => $id]);
-
-        $season = $this->getDoctrine()
-        ->getRepository(Season::class)
-        ->findAll(['program' => $id]);
-
-        if(!$program){
-            throw $this->createNotFoundException(
-                'No program with id : ' .$id. 'found in program\'s table.' 
-            );
-        }*/
         
         return $this->render('program/show.html.twig', [
             'program' => $program,
@@ -68,17 +89,6 @@ Class ProgramController extends AbstractController
     */
     public function showSeason(Program $program, Season $season): Response
     {
-        /*$program = $this->getDoctrine()
-        ->getRepository(Program::class)
-        ->findOneBy(['id' => $programId]);
-        
-        $season = $this->getDoctrine()
-        ->getRepository(Season::class)
-        ->findOneBy(['id' => $seasonId]);
-
-        $episode = $this->getDoctrine()
-        ->getRepository(Episode::class)
-        ->findBy(['season' => $seasonId]);*/
 
         return $this->render('program/season_show.html.twig', [
             'program' => $program,
