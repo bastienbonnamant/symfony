@@ -25,7 +25,5 @@ class CategoryType extends AbstractType
         ]);
     }
 
-    public function __toString() {
-        return $this->name;
-    }
+    
 }

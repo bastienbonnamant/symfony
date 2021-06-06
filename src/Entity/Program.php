@@ -6,9 +6,17 @@ use App\Repository\ProgramRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 /**
  * @ORM\Entity(repositoryClass=ProgramRepository::class)
+ * @UniqueEntity(
+ *     "title",
+ *     message="ce titre existe déjà."
+ * )
  */
 class Program
 {
@@ -30,6 +38,7 @@ class Program
     private $title;
 
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="text")
      */
     private $summary;

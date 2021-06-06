@@ -10,11 +10,9 @@ use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Episode;
 use App\Form\ProgramType;
-
 use Symfony\Component\HttpFoundation\Request;
-
-
-
+use App\Controller\EntityProgram;
+use Doctrine\ORM\EntityManagerInterface;
 
 
 
@@ -43,7 +41,7 @@ Class ProgramController extends AbstractController
      *
      * @Route("/newprogram", name="newprogram")
      */
-    public function new(Request $request) : Response
+    public function new(Request $request, EntityManagerInterface $manager) : Response
     {
         // Create a new Program Object
         $program = new Program();
@@ -52,7 +50,7 @@ Class ProgramController extends AbstractController
         // Get data from HTTP request
         $form->handleRequest($request);
         // Was the form submitted ?
-        if ($form->isSubmitted()) {
+        if ($form->isSubmitted()&& $form->isValid()) {
             // Deal with the submitted data
             // Get the Entity Manager
             $entityManager = $this->getDoctrine()->getManager();
@@ -63,6 +61,9 @@ Class ProgramController extends AbstractController
             // Finally redirect to categories list
             return $this->redirectToRoute('program_index');
         }
+
+    
+
         // Render the form
         return $this->render('category/newprogram.html.twig', ["form" => $form->createView()]);
     }
