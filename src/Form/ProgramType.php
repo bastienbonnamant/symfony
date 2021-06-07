@@ -9,13 +9,20 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
+use App\Entity\Actor;
 
 
 class ProgramType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
+        $builder->add('actors', EntityType::class, [
+            'class' => Actor::class,
+            'choice_label' => 'name',
+            'multiple' => true,
+            'expanded' => true,
+            'by_reference' => false,
+        ])
             ->add('name', TextType::class)
             ->add('title')
             ->add('summary')
