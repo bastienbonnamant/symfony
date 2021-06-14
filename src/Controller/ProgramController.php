@@ -13,7 +13,7 @@ use App\Form\ProgramType;
 use Symfony\Component\HttpFoundation\Request;
 use App\Controller\EntityProgram;
 use Doctrine\ORM\EntityManagerInterface;
-
+use App\Service\Slugify;
 
 
 Class ProgramController extends AbstractController
@@ -41,8 +41,11 @@ Class ProgramController extends AbstractController
      *
      * @Route("/newprogram", name="newprogram")
      */
-    public function new(Request $request, EntityManagerInterface $manager) : Response
+    public function new(Request $request, EntityManagerInterface $manager, Slugify $slugify) : Response
     {
+        $slug = $slugify->generate($program->getTitle());
+        $program->setSlug($slug);
+
         // Create a new Program Object
         $program = new Program();
         // Create the associated Form
@@ -71,7 +74,7 @@ Class ProgramController extends AbstractController
     /** 
      * @param int $id
      * @return Response
-    * @Route("/programs/{id}", requirements={"id"="\d+"}, methods={"GET"}, name="program_show")
+    * @Route("/programs/{slug}", methods={"GET"}, name="program_show")
     */
     public function show(Program $program) : Response
     {
