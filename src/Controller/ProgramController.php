@@ -14,6 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Controller\EntityProgram;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\Slugify;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+
 
 
 Class ProgramController extends AbstractController
@@ -41,10 +44,9 @@ Class ProgramController extends AbstractController
      *
      * @Route("/newprogram", name="newprogram")
      */
-    public function new(Request $request, EntityManagerInterface $manager, Slugify $slugify) : Response
+    public function new(Request $request, EntityManagerInterface $manager, Slugify $slugify, MailerInterface $mailer) : Response
     {
-        $slug = $slugify->generate($program->getTitle());
-        $program->setSlug($slug);
+        
 
         // Create a new Program Object
         $program = new Program();
@@ -57,10 +59,25 @@ Class ProgramController extends AbstractController
             // Deal with the submitted data
             // Get the Entity Manager
             $entityManager = $this->getDoctrine()->getManager();
+            $slug = $slugify->generate($program->getTitle());
+
+        $program->setSlug($slug);
             // Persist Category Object
             $entityManager->persist($program);
             // Flush the persisted object
             $entityManager->flush();
+
+            $email = (new Email())
+                ->from('your_email@example.com')
+                ->to('bastien.bonnamant@gmail.com')
+                ->subject('Une nouvelle série vient d\'être publiée !')
+                ->html('<p>Une nouvelle série vient d\'être publiée sur Wild Séries !</p>');
+
+        $mailer->send($email);
+
+        $this->getParameter('mailer_from');
+
+
             // Finally redirect to categories list
             return $this->redirectToRoute('program_index');
         }

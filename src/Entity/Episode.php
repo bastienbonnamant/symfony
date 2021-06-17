@@ -43,11 +43,6 @@ class Episode
      */
     private $slug;
 
-    
-
-    
-  
-
 
     public function getId(): ?int
     {

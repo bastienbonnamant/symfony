@@ -10,6 +10,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use App\Service\Slugify;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
+use Doctrine\ORM\EntityManagerInterface;
+
 
 /**
  * @Route("/episode")
@@ -29,20 +33,32 @@ class EpisodeController extends AbstractController
     /**
      * @Route("/new", name="episode_new", methods={"GET","POST"})
      */
-    public function new(Request $request): Response
+    public function new(Request $request, MailerInterface $mailer, Slugify $slugify, EntityManagerInterface $manager): Response
     {
-        
         $episode = new Episode();
-        $form = $this->createForm(EpisodeType::class, $episode);
-        $form->handleRequest($request);
+            $form = $this->createForm(EpisodeType::class, $episode);
+            $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
+            $slug = $slugify->generate($episode->getTitle());
+            $episode->setSlug($slug);
             $entityManager->persist($episode);
             $entityManager->flush();
 
+            $email = (new Email())
+                ->from('your_email@example.com')
+                ->to('bastien.bonnamant@gmail.com')
+                ->subject('Un nouvel épisode vient d\'être publié !')
+                ->html('<p>Un nouvel épisode vient d\'être publié sur Wild Séries !</p>');
+
+        $mailer->send($email);
+
+        $this->getParameter('mailer_from');
+
             return $this->redirectToRoute('episode_index');
         }
+        
 
         return $this->render('episode/new.html.twig', [
             'episode' => $episode,

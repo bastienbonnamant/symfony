@@ -8,9 +8,8 @@
     {% for program in programs %}
         
 
-        <div class="card" style="width: 18rem;">
-        <img src="{{program.poster}}" class="card-img-top" alt="...">
-        <div class="card-body">
+        <div class="card rounded border d-flex justify-content-around" style="width: 18rem;">
+        <div class="card-body rounded border border-secondary ">
             <h2>{{ loop.index }} / {{ program.title }} - Catégorie : {{ program.category.name }}</h2>
             <p>{{ program.summary }}</p>
             <a class="btn btn-primary" href="{{ path("program_show", { slug: program.slug }) }}" role="button">Voir la fiche</a>
